@@ -12,15 +12,16 @@ export CGO_ENABLED=false
 
 rm -rf distrib/
 
-declare -a target_folders=("linux_amd64" "linux_386" "linux_arm" "darwin_amd64" "windows_386" "linux_arm64")
+declare -a target_folders=("linux amd64" "linux 386" "linux arm" "darwin amd64" "windows 386" "linux arm64")
 
 mkdir distrib
 
 for folder in "${target_folders[@]}"
-do
-   IFS=_ read -a fields <<< $folder
+do 
+   read -r field1 field2 <<< $folder
+   folder=${folder/ /_}
    mkdir -p distrib/$folder/bin/
-   GOOS=${fields[0]} GOARCH=${fields[1]} go build -o distrib/$folder/bin/arduinoOTA -ldflags "-X main.compileInfo=$COMPILEINFO" main.go
+   GOOS=${field1} GOARCH=${field2} go build -o distrib/$folder/bin/arduinoOTA -ldflags "-X main.compileInfo=$COMPILEINFO" main.go
 
 done
 
@@ -31,6 +32,7 @@ cd distrib
 
 for folder in "${target_folders[@]}"
 do
+   folder=${folder/ /_}
    mv $folder arduinoOTA
    if [[ $folder == "windows_386" ]]; then
 	zip -r arduinoOTA-$VERSION-$folder.zip arduinoOTA/

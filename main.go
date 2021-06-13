@@ -53,7 +53,7 @@ func main() {
 	}
 
 	var httpClient = &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 60,
 	}
 
 	httpheader := "http://"
